@@ -10,3 +10,4 @@ All notable changes to this project will be documented in this file.
 - Secured Firebase credentials using `.env.local` file.
 - Implemented robust user creation in Firestore on first login to prevent race conditions.
 - Added Firestore security rules to protect user data.
+- Made the homepage dynamic to show different content for guests vs. logged-in users.

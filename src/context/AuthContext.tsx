@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, onAuthStateChanged, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase/config';
+import { auth, db } from '@/lib/firebase/config';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { AuthContextType, LoginCredentials, SignUpCredentials } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 
@@ -14,8 +15,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in, ensure their document exists in Firestore.
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (!userDocSnap.exists()) {
+          // New user, create document.
+          try {
+            await setDoc(userDocRef, {
+              uid: user.uid,
+              email: user.email,
+              createdAt: serverTimestamp(),
+            });
+          } catch (error) {
+            console.error("Error creating user document:", error);
+            // Optionally sign out user if document creation fails
+            await firebaseSignOut(auth);
+            setUser(null);
+            setLoading(false);
+            return;
+          }
+        }
+        setUser(user);
+      } else {
+        // User is signed out.
+        setUser(null);
+      }
       setLoading(false);
     });
 

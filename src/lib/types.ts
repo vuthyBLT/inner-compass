@@ -17,6 +17,7 @@ export type AuthContextType = {
   signUp: (credentials: SignUpCredentials) => Promise<UserCredential>;
   logIn: (credentials: LoginCredentials) => Promise<UserCredential>;
   logOut: () => Promise<void>;
+  signInWithGoogle: () => Promise<UserCredential>;
 };
 
 export type EnneagramType = {

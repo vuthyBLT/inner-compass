@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, onAuthStateChanged, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { User, onAuthStateChanged, signOut as firebaseSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase/config';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import type { AuthContextType, LoginCredentials, SignUpCredentials } from '@/lib/types';
@@ -62,6 +62,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     router.push('/login');
   };
 
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    return signInWithPopup(auth, provider);
+  };
 
   const value = {
     user,
@@ -69,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     signUp,
     logIn,
     logOut,
+    signInWithGoogle,
   };
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;

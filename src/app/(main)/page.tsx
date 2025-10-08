@@ -33,7 +33,7 @@ function GuestView() {
     <>
       <section className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl md:text-6xl">
-          Welcome to <span className="text-accent-foreground">EnneaSim</span>
+          Hello to <span className="text-accent-foreground">EnneaSim</span>
         </h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground sm:text-xl">
           Discover your Enneagram type, understand your personality, and simulate interactions to improve your relationships.
